@@ -30,5 +30,10 @@ namespace IgiCore.Plugins.Demo
 
 			this.Database.SaveChanges();
 		}
+
+		protected override void Dispose(bool disposing)
+		{
+			this.Database?.Dispose();
+		}
 	}
 }

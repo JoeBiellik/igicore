@@ -25,10 +25,14 @@ namespace IgiCore.Server
 		public Server()
 		{
 			Db = new DB();
+			Db.Database.CreateIfNotExists();
 
 			this.Plugins = LoadPlugins();
-
-			Db.Database.CreateIfNotExists();
+			this.Plugins[0].Dispose();
+			this.Plugins.RemoveAt(0);
+			Log(this.Plugins.Count.ToString());
+			this.Plugins = LoadPlugins();
+			Log(this.Plugins.Count.ToString());
 
 			//HandleEvent<string>("onResourceStarting", r => Debug.WriteLine($"Starting resource: {r}"));
 			//HandleEvent<string>("onResourceStart", r => Debug.WriteLine($"Start resource: {r}"));
@@ -50,8 +54,8 @@ namespace IgiCore.Server
 
 			foreach (var file in Directory.EnumerateFiles(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources", "igicore-fork", "plugins"), "*.dll", SearchOption.TopDirectoryOnly))
 			{
-				var asm = Assembly.LoadFrom(file);
-
+				var asm = Assembly.Load(File.ReadAllBytes(file));
+				
 				var type = asm.GetTypes().FirstOrDefault(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(ServerService)));
 				if (type == null) continue;
 

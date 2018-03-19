@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Reflection;
-using IgiCore.SDK.Models;
 using Newtonsoft.Json;
 
 namespace IgiCore.SDK
 {
-	public abstract class ServerService : IServerService
+	public abstract class ServerService : IServerService, IDisposable
 	{
 		public Dictionary<string, Delegate> Events { get; } = new Dictionary<string, Delegate>();
 		public Action<string> Logger { get; set; } = null;
@@ -32,5 +29,13 @@ namespace IgiCore.SDK
 		public void HandleJsonEvent<T>(string eventName, Action<T> action) => this.Events.Add(eventName, new Action<string>(json => action(JsonConvert.DeserializeObject<T>(json))));
 		public void HandleJsonEvent<T1, T2>(string eventName, Action<T1, T2> action) => this.Events.Add(eventName, new Action<string, string>((j1, j2) => action(JsonConvert.DeserializeObject<T1>(j1), JsonConvert.DeserializeObject<T2>(j2))));
 		public void HandleJsonEvent<T1, T2, T3>(string eventName, Action<T1, T2, T3> action) => this.Events.Add(eventName, new Action<string, string, string>((j1, j2, j3) => action(JsonConvert.DeserializeObject<T1>(j1), JsonConvert.DeserializeObject<T2>(j2), JsonConvert.DeserializeObject<T3>(j3))));
+
+		protected abstract void Dispose(bool disposing);
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 	}
 }
