@@ -26,7 +26,7 @@ namespace IgiCore.Client.Services
 			{
 				var citVeh = new CitizenFX.Core.Vehicle(vehicleHandle);
 				var player = new Player(API.GetNearestPlayerToEntity(citVeh.Handle));
-				Debug.WriteLine($"Nearest Player: {player.Name}");
+				//Debug.WriteLine($"Nearest Player: {player.Name}");
 
 				if (player != client.LocalPlayer)
 				{
@@ -40,11 +40,14 @@ namespace IgiCore.Client.Services
 			foreach (int vehicleHandle in this.Tracked)
 			{
 				var citVeh = new CitizenFX.Core.Vehicle(vehicleHandle);
-				Debug.WriteLine($"Vehicle: {vehicleHandle} - {citVeh.Position}");
+				//Debug.WriteLine($"Vehicle: {vehicleHandle} - {citVeh.Position}");
 
 				Car car = citVeh;
-
 				BaseScript.TriggerServerEvent("igi:vehicle:save", JsonConvert.SerializeObject(car));
+
+
+				Debug.WriteLine($"demo:server:test");
+				BaseScript.TriggerServerEvent("demo:server:test", "Hello from IgiCore.Client.Services.VehicleService");
 			}
 		}
 	}

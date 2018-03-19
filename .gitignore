@@ -2,6 +2,9 @@
 packages/
 */obj/
 */bin/
+*/*/obj/
+*/*/bin/
+/plugins/
 /*.pdb
 /*.xml
 /*.dll
