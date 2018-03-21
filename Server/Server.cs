@@ -8,17 +8,19 @@ using CitizenFX.Core;
 using IgiCore.Core.Extensions;
 using IgiCore.Core.Models.Objects.Vehicles;
 using IgiCore.SDK;
+using IgiCore.Server.Http;
 using IgiCore.Server.Models;
 using IgiCore.Server.Storage.MySql;
 using Newtonsoft.Json;
 using Citizen = CitizenFX.Core.Player;
 using IgiCore.Server.Models.Objects.Vehicles;
-using Newtonsoft.Json.Linq;
+using Microsoft.Owin.Hosting;
 
 namespace IgiCore.Server
 {
 	public partial class Server : BaseScript
 	{
+		protected IDisposable WebServer;
 		protected List<ServerService> Plugins;
 		public static DB Db;
 
@@ -46,6 +48,12 @@ namespace IgiCore.Server
 			HandleEvent<Citizen>("igi:user:load", User.Load);
 			HandleEvent<string>("igi:character:save", Character.Save);
 			HandleJsonEvent<Car>("igi:vehicle:save", VehicleExtensions.Save);
+
+			this.WebServer = WebApp.Start<Startup>(new StartOptions
+			{
+				ServerFactory = "Nowin",
+				Port = 8080
+			});
 		}
 
 		private List<ServerService> LoadPlugins()
